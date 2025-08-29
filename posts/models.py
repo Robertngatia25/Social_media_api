@@ -7,11 +7,13 @@ class Post(models.Model):
     author = models.ForeignKey(user, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=200)
     content = models.TextField()
+    media = models.FileField(upload_to='post_media/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class meta:
+    class Meta:
         ordering = ['-created_at']
+
 
     def __str__(self):
         return f"Post by {self.user.username} at {self.created_at}"

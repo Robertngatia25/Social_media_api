@@ -112,7 +112,6 @@ Content-Type: application/json
   "bio": "Updated bio from README"
 }
 ```
-
 ---
 
 ## 4) Testing Tips (VS Code Postman Extension)
@@ -124,6 +123,64 @@ Content-Type: application/json
 5. Copy the `token` from the response and use it as `Authorization: Token <token>` for the protected endpoints.
 
 ---
+Create a Post (Authenticated)
+
+POST /api/posts/
+Headers:
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+  "title": "My First Post",
+  "content": "This is my first post on the platform!",
+  "media": null
+}
+
+List Posts (Public)
+
+GET /api/posts/
+[
+  {
+    "id": 1,
+    "author": "john_doe",
+    "title": "My First Post",
+    "content": "This is my first post on the platform!",
+    "media": null,
+    "created_at": "2025-08-29T12:00:00Z"
+  }
+]
+
+Update Post (Author Only)
+
+PUT /api/posts/1/
+Headers: 
+Authorization: Token <token>
+
+{
+  "title": "My Updated Post",
+  "content": "I just edited my post.",
+  "media": null
+}
+
+Delete Post (Author Only)
+
+DELETE /api/posts/1/
+Headers:
+Authorization: Token <token>
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 5) Troubleshooting
 

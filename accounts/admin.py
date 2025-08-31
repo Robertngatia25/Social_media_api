@@ -5,5 +5,5 @@ from .models import CustomUser
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
-        ("Additional Info", {"fields": ("bio", "profile_picture", "following")}),
+        ("Additional Info", {"fields": ("bio", "profile_picture")}),
     )

@@ -7,6 +7,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import CustomUser, Follow
 from rest_framework.decorators import action
+from notifications.models import Notification
 from django.shortcuts import get_object_or_404
 
 User = get_user_model()
@@ -56,10 +57,16 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.user == user_to_follow:
             return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-        follow, created = Follow.objects.get_or_create(follower=request.user, following=user_to_follow)
-        if not created:
-            return Response({"message": "You are already following this user."}, status=status.HTTP_200_OK)
-        return Response({"message": f"You are now following {user_to_follow.username}"}, status=status.HTTP_201_CREATED)
+        _, created = Follow.objects.get_or_create(follower=request.user, following=user_to_follow)
+        if created:
+            # Create a notification for the user being followed
+            Notification.objects.create(
+                recipient=user_to_follow,
+                sender=request.user,
+                verb=f"{request.user.username} started following you."
+            )
+            return Response({"message": f"You are now following {user_to_follow.username}"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "You are already following this user."}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
     def unfollow(self, request, pk=None):

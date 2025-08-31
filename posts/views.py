@@ -5,6 +5,8 @@ from .permissions import IsOwnerOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from notifications.models import Notification
+from accounts.models import Follow
+from django.db.models import Q
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by("-created_at")
@@ -13,25 +15,50 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user) #Automatically link post to the logged-in user
+    #Feeds endpoints
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def feeds(self, request):
+        # Get the IDs of users that the current user is following.
+        following_ids = Follow.objects.filter(
+            follower=request.user
+        ).values_list('following_id', flat=True)
+
+        # Create a queryset for posts from followed users and the user's own posts.
+        posts = Post.objects.filter(
+            Q(author_id__in=following_ids) | Q(author=request.user)
+        ).distinct().order_by("-created_at")
+
+        # Pagination
+        page = self.paginate_queryset(posts)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
 
     # Like Toggle
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def like(self, request, pk=None):
         post = self.get_object()
-        like, created = Like.objects.get_or_create(user=request.user, post=post)
-        if not created:
+        try:
+            # If like exists, delete it (unlike)
+            like = Like.objects.get(user=request.user, post=post)
             like.delete()
             return Response({"message": "Unliked"}, status=status.HTTP_200_OK)
-        
-        if post.author != request.user:  # Don't notify self
-         Notification.objects.create(
-            recipient=post.author,
-            actor=request.user,
-            verb="liked your post",
-            target = post,
-        )
+        except Like.DoesNotExist:
+            # If like does not exist, create it (like)
+            Like.objects.create(user=request.user, post=post)
+            if post.author != request.user:  # Don't notify self
+                Notification.objects.create(
+                    recipient=post.author,
+                    actor=request.user,
+                    verb="liked your post",
+                    target=post,
+                )
+            return Response({"message": "Liked"}, status=status.HTTP_201_CREATED)
 
-        return Response({"message": "Liked"}, status=status.HTTP_201_CREATED)
+
 
 
     # Nested comments

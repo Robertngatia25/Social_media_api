@@ -12,7 +12,7 @@ A Django REST Framework–based social media backend where users can:
 
 Features
 
-- JWT Authentication
+- Authentication
 - Custom User Model with follow/unfollow system
 - Posts with likes & comments
 - Notifications for interactions (likes, comments, follows)

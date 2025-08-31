@@ -92,6 +92,7 @@ Michael → 2025Mary!
 
 POST /api/accounts/register/
 Content-Type: application/json
+```json
 {
   "username": "James",
   "email": "james@example.com",
@@ -100,6 +101,9 @@ Content-Type: application/json
   "profile_picture": null
 }
 
+```
+
+```json
 {
   "username": "Mary",
   "email": "mary@example.com",
@@ -107,7 +111,8 @@ Content-Type: application/json
   "bio": "Frontend designer passionate about UI/UX",
   "profile_picture": null
 }
-
+```
+```json
 {
   "username": "Michael",
   "email": "michael@example.com",
@@ -116,26 +121,29 @@ Content-Type: application/json
   "profile_picture": null
 }
 
+```
 Login Users
 
 POST /api/accounts/login/
 Content-Type: application/json
-
+```json
 {
   "username": "james",
   "password": "Jamesstrong!230"
 }
-
+```
+```json
 {
   "username": "mary",
   "password": "2025Mary!"
 }
-
+```
+```json
 {
   "username": "michael",
   "password": "2025Mary!"
 }
-
+```
 **Expected 200**
 
 ```json
@@ -167,7 +175,7 @@ Content-Type: application/json
     "email": "michael@example.com",
   }
 }
-
+```
 Posts
 Create Post
 
@@ -175,13 +183,16 @@ POST /api/posts/
 Headers: Authorization: Bearer <access_token>
 Content-Type: application/json
 
+```json
 {
   "title": "My First Post",
   "content": "This is my first post on the platform!",
   "media": null
 }
+```
 
 *** List All Posts
+
 GET /api/posts/
 
 Retrieve Single Post
@@ -192,20 +203,19 @@ Update Post (Author Only)
 PUT /api/posts/1/
 Headers: 
 Authorization: Token <token>
-
+```json
 {
   "title": "My Updated Post",
   "content": "I just edited my post.",
   "media": null
 }
-
+```
 Delete Post (Author Only)
 
 DELETE /api/posts/1/
 Headers:
 Authorization: Token <token>
 
----
 
 *** Likes
 Toggle Like / Unlike a Post
@@ -219,11 +229,11 @@ Create Comment
 POST /api/posts/1/comment/
 Headers: Authorization: Bearer <access_token>
 Content-Type: application/json
-
+```json
 {
   "content": "Great post!"
 }
-
+```
 *** Follow/Unfollow
 
 POST /api/accounts/1/follow/
@@ -239,17 +249,18 @@ Get Personalized Feed
 GET /api/posts/feeds/
 Headers: Authorization: Bearer <access_token>
 
----
+
 
 
 ANOTHER EXAMPLE TO USE FOR ONLY REGISTER AND LOGIN PURPOSES 
 
 ### Example — Register Bob
 
-```http
+http
 POST /api/accounts/register/
 Content-Type: application/json
 
+```json
 {
   "username": "Bob",
   "email": "bob@example.com",
@@ -276,11 +287,11 @@ Content-Type: application/json
 
 ### Example B — Login Bob
 
-```http
+http
 POST /api/accounts/login/
 Content-Type: application/json
 Authorization: Token <token>
-
+```json
 {
   "username": "bob",
   "password": "BobStrong#2025!"
@@ -303,26 +314,25 @@ Authorization: Token <token>
 
 ### — Get Bob Profile
 
-```http
+http
 GET /api/accounts/profile/
 Authorization: Token <token>
-```
+
 
 **Expected 200** – user object
 
 ### Example D — Update Bob Profile
 
-```http
+http
 PATCH /api/accounts/profile/
 Authorization: Token <token>
 Content-Type: application/json
-
+```json
 {
   "bio": "Updated bio from README"
 }
-```
----
 
+```
 ## 4) Testing Tips (VS Code Postman Extension)
 
 1. Install the **Postman** extension in VS Code.
@@ -331,13 +341,10 @@ Content-Type: application/json
 4. Paste one of the JSON bodies above and **Send**.
 5. Copy the `token` from the response and use it as `Authorization: Token <token>` for the protected endpoints.
 
----
-
-
 ## 5) Troubleshooting
 
 * `400 Bad Request`: missing/duplicate username/email, or bad JSON.
 * `401 Unauthorized`: missing/invalid `Authorization` header for `/profile`.
 * `415 Unsupported Media Type`: set header `Content-Type: application/json`.
 
----
+```

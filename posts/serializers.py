@@ -16,7 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
         """
         Serializes the first 10 comments for a given post.
         """
-        comments = obj.comments.all()[:10].order_by("-created_at")  # limit to 10 comments for performance
+        comments = obj.comments.all().order_by("-created_at")[:10]  # limit to 10 comments for performance
         serializer = CommentSerializer(comments, many=True)
         return serializer.data
 

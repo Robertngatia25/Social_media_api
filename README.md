@@ -226,7 +226,7 @@ Headers: Authorization: Bearer <access_token>
 *** Comments
 Create Comment
 
-POST /api/posts/1/comment/
+POST /api/posts/1/comments/
 Headers: Authorization: Bearer <access_token>
 Content-Type: application/json
 ```json
